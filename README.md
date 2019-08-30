@@ -1,6 +1,5 @@
 ##仿淘宝详情页ui框架
 
 ###效果
-<video id="video" controls="" preload="none">
-    <source id="mp4" src="./config/demo.mp4" type="video/mp4>
-</video>
+<iframe frameborder="0" width="1080px" height="1440px" src="./config/demo.mp4" allowFullScreen="true">
+</iframe>
