@@ -1,11 +1,16 @@
 package com.ljc.demo;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -13,19 +18,37 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.ljc.broadcast.BroadCastManager;
+import com.ljc.demo.model.TempModel;
+import com.ljc.demo.model.TempParcelableModel;
+import com.ljc.demo.model.TempSerializableModel;
 
 import java.lang.reflect.Field;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 产品详情
  */
 public class ProductDetailActivity extends AppCompatActivity {
     NestedScrollView sv_detail;
-    ImageView iv_product;
+    ImageView iv_product, iv_play, iv_video_f;
+    VideoView videoview;
     LinearLayout ll_pj, ll_xq, ll_tj;
     RelativeLayout rl_title;
     TextView tv_back, tv_like, tv_share;
     TabLayout tl_menu;
+
+    private Map<String, Object> data;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +66,24 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         sv_detail = findViewById(R.id.sv_detail);
         iv_product = findViewById(R.id.iv_product);
+        iv_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (data.isEmpty()) {
+                    initData();
+                }
+                Map.Entry<String, Object> entry = data.entrySet().iterator().next();
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                HashMap<String, Object> h1 = new HashMap<>();
+                h1.put(key, value);
+                BroadCastManager.getInstance().sendBroadCast(ProductDetailActivity.this, MainActivity.BROADCAST_ACTION_EXP, h1);
+                data.remove(key);
+            }
+        });
+        iv_video_f = findViewById(R.id.iv_video_f);
+        videoview = findViewById(R.id.videoview);
+        iv_play = findViewById(R.id.iv_play);
         ll_pj = findViewById(R.id.ll_pj);
         ll_xq = findViewById(R.id.ll_xq);
         ll_tj = findViewById(R.id.ll_tj);
@@ -52,9 +93,103 @@ public class ProductDetailActivity extends AppCompatActivity {
         tv_share = findViewById(R.id.tv_share);
         tl_menu = findViewById(R.id.tl_menu);
 
+        String img = "http://img1.imgtn.bdimg.com/it/u=1563980539,1672265910&fm=26&gp=0.jpg";
+        String gif = "http://img.mp.itc.cn/upload/20160918/b71745885bc448399a67dc7e43b72660_th.gif";
+        Glide.with(this)
+                .load(gif)
+                .apply(new RequestOptions()
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)).into(iv_product);
+
+        String video_f_url = "https://hmmalloss.oss-cn-hangzhou.aliyuncs.com/7sNPxHPFm8iXGrwNCG8pYnbdH4epK5Kx.jpg";
+        Glide.with(this).load(video_f_url).into(iv_video_f);
+
+        String videoUrl = "https://hmmalloss.oss-cn-hangzhou.aliyuncs.com/sAteftCcxwZrSttkXWskE7iNHW5FMcmn.mp4";
+        videoview.setVideoPath(videoUrl);
+        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                if (isWifi(ProductDetailActivity.this)) {
+                    videoview.start();
+                    iv_play.setVisibility(View.GONE);
+                    iv_video_f.setVisibility(View.GONE);
+                } else {
+                    iv_play.setVisibility(View.VISIBLE);
+                    iv_video_f.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        videoview.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                iv_play.setVisibility(View.VISIBLE);
+                iv_video_f.setVisibility(View.VISIBLE);
+            }
+        });
+
+        iv_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                videoview.start();
+                iv_play.setVisibility(View.GONE);
+                iv_video_f.setVisibility(View.GONE);
+            }
+        });
+
+        initData();
         initTab();
         initTitleView();
         initScroll();
+    }
+
+    /**
+     * 判断是否是wifi连接
+     */
+    public static boolean isWifi(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (cm == null)
+            return false;
+        return cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+
+    }
+
+    private void initData() {
+        data = new HashMap<>();
+        data.put("Byte", (byte) 1);
+        data.put("byte[]", new Byte[]{1, 2, 3});
+        data.put("String", "StringValue");
+        data.put("String[]", new String[]{"1", "b", "3c"});
+        data.put("Character", '2');
+        data.put("Character[]", new Character[]{'a', '2', 'c'});
+        data.put("Short", (short) 2);
+        data.put("Short[]", new Short[]{3, 5, 7});
+        data.put("Boolean", false);
+        data.put("Boolean[]", new Boolean[]{false, true});
+        data.put("Integer", 3);
+        data.put("Integer[]", new Integer[]{3, 4, 5});
+        data.put("Long", 41231231241312312L);
+        data.put("Long[]", new Long[]{41231231241312312L, 738173871737L, 472178371234688L});
+        data.put("Float", 0.23f);
+        data.put("Float[]", new Float[]{0.43f, 1.25f});
+        data.put("Double", 0.23d);
+        data.put("Double[]", new Double[]{0.43d, 1.25d});
+        Bundle b1 = new Bundle();
+        b1.putString("data", "value");
+        data.put("Bundle", b1);
+        Bundle[] bs = new Bundle[]{b1, b1, b1};
+        data.put("Bundle[]", bs);
+        Parcel parcel = Parcel.obtain();
+        parcel.writeLong(1);
+        parcel.writeString("555");
+        TempParcelableModel tempParcelableModel = new TempParcelableModel(parcel);
+        data.put("Parcelable", tempParcelableModel);
+        TempParcelableModel[] tempParcelableModels = new TempParcelableModel[]{tempParcelableModel, tempParcelableModel};
+        data.put("Parcelable[]", tempParcelableModels);
+        TempSerializableModel tempSerializableModel = new TempSerializableModel();
+        data.put("Serializable", tempSerializableModel);
+        TempModel tempModel = new TempModel();
+        data.put("Class", tempModel);
     }
 
     private void initTab() {
@@ -82,6 +217,8 @@ public class ProductDetailActivity extends AppCompatActivity {
             if (tab == null) return;
             Class c = tab.getClass();
             try {
+                //不同android.support.design.widget版本中TabLayout.Tab的view参数名可能不同
+                //具体需要去TabLayout.Tab查看参数名，参数名不一致将导致点击切换无效
                 Field field = c.getDeclaredField("view");
                 field.setAccessible(true);
                 final View view = (View) field.get(tab);
