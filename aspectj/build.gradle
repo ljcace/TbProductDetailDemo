@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply from: './aspectj-configure-lib.gradle'
 
 android {
     def android = rootProject.ext.android
@@ -6,12 +7,14 @@ android {
     compileSdkVersion android.compileSdkVersion
     buildToolsVersion android.buildToolsVersion
 
-
     defaultConfig {
         minSdkVersion android.minSdkVersion
         targetSdkVersion android.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -27,5 +30,6 @@ dependencies {
     def dependencies = rootProject.ext.dependencies
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation dependencies.appcompatV7
+    api dependencies.appcompatV7
+    api dependencies.aspectj
 }

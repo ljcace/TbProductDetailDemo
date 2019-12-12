@@ -12,14 +12,15 @@ import android.util.Log;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.Map;
 
 public class BroadCastManager {
     private static final String TAG = "BroadCastManager";
-    private WeakReference<Map<String, BroadcastReceiver>> receivers;
+    private WeakReference<HashMap<String, BroadcastReceiver>> receivers;
 
     private BroadCastManager() {
-        receivers = new WeakReference<>(receivers.get());
+        receivers = new WeakReference<>(new HashMap<String, BroadcastReceiver>());
     }
 
     private static class BroadCastSingle {

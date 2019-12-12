@@ -3,11 +3,13 @@ package com.ljc.demo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.ljc.broadcast.BroadCastManager;
 
@@ -18,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
-        findViewById(R.id.tv_detail).setOnClickListener(new View.OnClickListener() {
+        TextView textview = findViewById(R.id.tv_detail);
+        textview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, ProductDetailActivity.class));

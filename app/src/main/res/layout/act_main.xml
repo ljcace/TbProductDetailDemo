@@ -8,6 +8,10 @@
         android:id="@+id/tv_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lineSpacingExtra="20dp"
         android:padding="10dp"
-        android:text="详情" />
+        android:text="点击试试"
+        android:textColor="#ff0000"
+        android:textSize="30dp" />
 </LinearLayout>

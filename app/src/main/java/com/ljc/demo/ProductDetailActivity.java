@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -23,18 +22,15 @@ import android.widget.VideoView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.ljc.aspectj.annotations.MethodDelay;
 import com.ljc.broadcast.BroadCastManager;
 import com.ljc.demo.model.TempModel;
 import com.ljc.demo.model.TempParcelableModel;
 import com.ljc.demo.model.TempSerializableModel;
 
 import java.lang.reflect.Field;
-import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 产品详情
@@ -107,6 +103,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         videoview.setVideoPath(videoUrl);
         videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
+            @MethodDelay
             public void onPrepared(MediaPlayer mp) {
                 if (isWifi(ProductDetailActivity.this)) {
                     videoview.start();
@@ -144,6 +141,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     /**
      * 判断是否是wifi连接
      */
+    @MethodDelay
     public static boolean isWifi(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -154,6 +152,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     }
 
+    @MethodDelay
     private void initData() {
         data = new HashMap<>();
         data.put("Byte", (byte) 1);
@@ -192,6 +191,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         data.put("Class", tempModel);
     }
 
+    @MethodDelay
     private void initTab() {
         tl_menu.setTabMode(TabLayout.MODE_FIXED);
         TabLayout.Tab tab1 = tl_menu.newTab().setText("产品");
@@ -256,6 +256,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
     }
 
+    @MethodDelay
     private void initScroll() {
         rl_title.setBackgroundColor(Color.argb(0, 255, 255, 255));
 
@@ -281,6 +282,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
     }
 
+    @MethodDelay
     private void initTitleView() {
         tv_back.setTextColor(Color.argb(255, 0, 0, 0));
         tv_share.setTextColor(Color.argb(255, 0, 0, 0));
@@ -293,6 +295,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         rl_title.setBackgroundColor(Color.argb(0, 255, 255, 255));
     }
 
+    @MethodDelay
     private void updateTitleColor(int scrollY, int bannerHeight) {
         float scale = (float) scrollY / bannerHeight;
         float alpha = (255 * scale);
@@ -317,6 +320,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         rl_title.setBackgroundColor(Color.argb((int) alpha, 255, 255, 255));
     }
 
+    @MethodDelay
     private void updateTitleTab(int scrollY) {
         rl_title.setBackgroundColor(Color.argb(255, 255, 255, 255));
         tv_back.setAlpha(1);

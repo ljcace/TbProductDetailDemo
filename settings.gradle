@@ -1,1 +1,1 @@
-include ':app', ':broadcast'
+include ':app', ':broadcast', ':aspectj', ':lib_base'
